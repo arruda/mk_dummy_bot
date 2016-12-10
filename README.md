@@ -1,4 +1,4 @@
-# Mage Knight Dummy
+# Mage Knight Dummy Bot
 
 
 ## Dev

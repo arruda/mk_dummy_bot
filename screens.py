@@ -6,7 +6,6 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
-# from kivy.properties import ObjectProperty
 
 from bot import MKDummy, COLORS
 
@@ -20,8 +19,10 @@ class BasicScreen(Screen):
         super(BasicScreen, self).__init__(**kwargs)
 
         main_box = BoxLayout(orientation='vertical')
-        self.screen_title = Label(text=self.name, font_size=30)
-        self.screen_description = Label(text=description, font_size=30)
+
+        self.screen_title = Label(text=self.name, font_size=30, color=[0, 0, 0, 1])
+        self.screen_description = Label(text=description, font_size=30, color=[0, 0, 0, 1])
+
         main_box.add_widget(self.screen_title)
         main_box.add_widget(self.screen_description)
 
@@ -39,7 +40,6 @@ class BasicScreen(Screen):
 
     def handle_button(self, option, button):
         self.screen_description.text = option
-        # self.manager.current = option
 
 
 class ChooseDummyScreen(BasicScreen):

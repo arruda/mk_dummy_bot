@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 from kivy.app import App
+from kivy.core.window import Window
 
 from kivy.uix.screenmanager import ScreenManager
 
 from screens import DummyOptScreen, ChooseDummyScreen, NewRoundScreen, AddColorScreen
 from bot import COLORS
+
+
+Window.clearcolor = (1, 1, 1, 1)
 
 
 class MKScreenManager(ScreenManager):
