@@ -12,6 +12,8 @@ pip install -r requirements.txt
 ### Building app
 `buildozer android debug deploy`
 
+## Publishing
+`buildozer android release`
 
 
 # License
