@@ -1,5 +1,5 @@
 # Mage Knight Dummy Bot
-
+A simple Dummy player app for Mage Knight using Kivy.
 
 ## Dev
 ### Install Requirements
