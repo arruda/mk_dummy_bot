@@ -1,0 +1,8 @@
+# -*- coding: utf-8 -*-
+
+from kivy.uix.behaviors import ButtonBehavior
+from kivy.uix.image import Image
+
+
+class IconButton(ButtonBehavior, Image):
+    pass

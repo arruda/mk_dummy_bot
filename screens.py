@@ -4,10 +4,47 @@ from functools import partial
 
 from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 
+from kv_utils import IconButton
+
 from bot import MKDummy, COLORS
+
+
+class BasicImageScreen(Screen):
+
+    def __init__(self, **kwargs):
+        description = kwargs.pop('description')
+        self.options = kwargs.pop('options')
+
+        super(BasicImageScreen, self).__init__(**kwargs)
+
+        main_box = BoxLayout(orientation='vertical')
+
+        self.screen_title = Label(text=self.name, font_size=30, color=[0, 0, 0, 1])
+        self.screen_description = Label(text=description, font_size=30, color=[0, 0, 0, 1])
+
+        main_box.add_widget(self.screen_title)
+        main_box.add_widget(self.screen_description)
+
+        options_box = BoxLayout()
+        for opt in self.options:
+            img_file_name = 'data/%s_sm.png' % opt.replace(' ', '_')
+            # opt_button = IconButton(source=img_file_name, size=(296, 296), allow_stretch=True, keep_ratio=False)
+            opt_button = IconButton(source=img_file_name, size=(296, 296))
+
+            # each button will bind on release to self.handle_button(opt)
+            handle_btn_for_option = partial(self.handle_button, opt)
+            opt_button.bind(on_release=handle_btn_for_option)
+            options_box.add_widget(opt_button)
+
+        main_box.add_widget(options_box)
+        self.add_widget(main_box)
+
+    def handle_button(self, option, button):
+        self.screen_description.text = option
 
 
 class BasicScreen(Screen):
@@ -42,7 +79,7 @@ class BasicScreen(Screen):
         self.screen_description.text = option
 
 
-class ChooseDummyScreen(BasicScreen):
+class ChooseDummyScreen(BasicImageScreen):
 
     def handle_button(self, option, button):
         self.choose_dummy(option)
@@ -66,7 +103,7 @@ class ChooseDummyScreen(BasicScreen):
         self.manager.current = 'Dummy Options'
 
 
-class DummyOptScreen(BasicScreen):
+class DummyOptScreen(BasicImageScreen):
     def __init__(self, **kwargs):
         super(DummyOptScreen, self).__init__(**kwargs)
 
