@@ -109,15 +109,45 @@ class ChooseDummyScreen(BasicImageScreen):
 
 class DummyOptScreen(Screen):
 
+    def _build_crystal_box(self, color, qtd):
+        color = color.lower()
+        if hasattr(self, '%s_crystal_box' % color):
+            crystal_box = self.__getattribute__('%s_crystal_box' % color)
+        else:
+            crystal_box = GridLayout(cols=2, col_default_width=70)
+            self.__setattr__('%s_crystal_box' % color, crystal_box)
+
+        crystal_box.clear_widgets()
+        crystal_img = Image(source="data/%s_crystal.png" % color, size=(55, 55), size_hint=(None, 1))
+
+        value = Label(text=str(qtd), font_size=30, color=[0, 0, 0, 1], size_hint=(None, 1))
+
+        crystal_box.add_widget(crystal_img)
+        crystal_box.add_widget(value)
+        return crystal_box
+
+    def _build_current_cards(self):
+        cards_box = BoxLayout(orientation='horizontal')
+
+        cards_image = Image(source="data/cards_sm.png", size=(55, 55), size_hint=(None, None))
+        self.current_total_cards = Label(text="10/10", font_size=30, color=[0, 0, 0, 1], size_hint=(None, 1))
+        cards_box.add_widget(cards_image)
+        cards_box.add_widget(self.current_total_cards)
+        return cards_box
+
+    def _build_deck_box(self):
+        deck_box = BoxLayout(orientation='vertical')
+        deck_box.add_widget(self._build_current_cards())
+        for color in COLORS:
+            color = color.lower()
+            crystal_box = self._build_crystal_box(color, 0)
+            deck_box.add_widget(crystal_box)
+
+        return deck_box
+
     def _build_description_box(self):
         description_box = BoxLayout(orientation='vertical')
-
-        self.screen_title = Label(text=self.name, font_size=30, color=[0, 0, 0, 1])
-        self.screen_description = Label(text=self.description, font_size=30, color=[0, 0, 0, 1])
-
-        description_box.add_widget(self.screen_title)
-        description_box.add_widget(self.screen_description)
-
+        description_box.add_widget(self._build_deck_box())
         return description_box
 
     def _build_top_box(self):
@@ -129,10 +159,7 @@ class DummyOptScreen(Screen):
 
         return top_box
 
-    def _build_main_box(self):
-        main_box = BoxLayout(orientation='vertical')
-
-        main_box.add_widget(self._build_top_box())
+    def _build_options_box(self):
         options_box = BoxLayout()
         for opt in self.options:
             img_file_name = 'data/%s_sm.png' % opt.replace(' ', '_')
@@ -142,8 +169,14 @@ class DummyOptScreen(Screen):
             handle_btn_for_option = partial(self.handle_button, opt)
             opt_button.bind(on_release=handle_btn_for_option)
             options_box.add_widget(opt_button)
+        return options_box
 
-        main_box.add_widget(options_box)
+    def _build_main_box(self):
+        main_box = BoxLayout(orientation='vertical')
+
+        main_box.add_widget(self._build_top_box())
+
+        main_box.add_widget(self._build_options_box())
         self.add_widget(main_box)
 
     def __init__(self, **kwargs):
@@ -161,7 +194,7 @@ class DummyOptScreen(Screen):
 
     def draw(self):
         self.manager.dummy.resolve_turn()
-        self.update_description()
+        self.update_current_total_cards()
         if self.manager.dummy.end_of_round:
             self.manager.current = 'New Round'
 
@@ -174,14 +207,21 @@ class DummyOptScreen(Screen):
             char_image_file = 'data/%s.png' % self.manager.dummy.name
             self.char_image.source = char_image_file
 
-    def update_description(self):
+    def update_current_total_cards(self):
         if self.manager and self.manager.dummy:
-            self.screen_description.text = self.manager.dummy.get_status()
+            new_current_text = "%d/%d" % (len(self.manager.dummy.deck), self.manager.dummy.get_total_cards())
+            self.current_total_cards.text = new_current_text
+
+    def update_crystals(self):
+        if self.manager and self.manager.dummy:
+            for crystal, value in self.manager.dummy.crystals.items():
+                color = crystal.lower()
+                self._build_crystal_box(color, value)
 
     def on_pre_enter(self):
         self.update_char_image()
-        self.update_description()
-        self.update_title()
+        self.update_crystals()
+        self.update_current_total_cards()
 
 
 class NewRoundScreen(BasicScreen):

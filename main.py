@@ -54,29 +54,29 @@ class MKDummyApp(App):
         )
         sm.add_widget(dummy_screen)
 
-        # new_round_Screen = NewRoundScreen(
-        #     name='New Round',
-        #     options=[
-        #         'Add Card',
-        #         'Add Crystal',
-        #     ],
-        #     description='description'
-        # )
-        # sm.add_widget(new_round_Screen)
+        new_round_Screen = NewRoundScreen(
+            name='New Round',
+            options=[
+                'Add Card',
+                'Add Crystal',
+            ],
+            description='description'
+        )
+        sm.add_widget(new_round_Screen)
 
-        # add_card = AddColorScreen(
-        #     name='Add Card',
-        #     options=list(COLORS),
-        #     description='Choose the new Advanced Action card color:'
-        # )
-        # sm.add_widget(add_card)
+        add_card = AddColorScreen(
+            name='Add Card',
+            options=list(COLORS),
+            description='Choose the new Advanced Action card color:'
+        )
+        sm.add_widget(add_card)
 
-        # add_crystal = AddColorScreen(
-        #     name='Add Crystal',
-        #     options=list(COLORS),
-        #     description='Choose the new Crystal color:'
-        # )
-        # sm.add_widget(add_crystal)
+        add_crystal = AddColorScreen(
+            name='Add Crystal',
+            options=list(COLORS),
+            description='Choose the new Crystal color:'
+        )
+        sm.add_widget(add_crystal)
 
         return sm
 
