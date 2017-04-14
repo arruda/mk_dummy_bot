@@ -6,6 +6,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.anchorlayout import AnchorLayout
+from kivy.uix.gridlayout import GridLayout
 
 from kivy.uix.image import Image
 from kivy.uix.label import Label
@@ -36,7 +37,7 @@ class BasicImageScreen(Screen):
         for opt in self.options:
             img_file_name = 'data/%s_sm.png' % opt.replace(' ', '_')
             # opt_button = IconButton(source=img_file_name, size=(296, 296), allow_stretch=True, keep_ratio=False)
-            opt_button = IconButton(source=img_file_name, size=(296, 296), border=(10,10,10,10))
+            opt_button = IconButton(source=img_file_name, size=(296, 296))
 
             # each button will bind on release to self.handle_button(opt)
             handle_btn_for_option = partial(self.handle_button, opt)
@@ -107,28 +108,34 @@ class ChooseDummyScreen(BasicImageScreen):
 
 
 class DummyOptScreen(Screen):
-    def __init__(self, **kwargs):
-        description = kwargs.pop('description')
-        self.options = kwargs.pop('options')
 
-        super(DummyOptScreen, self).__init__(**kwargs)
-
-        main_layout = AnchorLayout(anchor_x='center', anchor_y='center')
-        self.bg_image = Image(source='data/norowas.png', allow_stretch=True, keep_ratio=False)
-        main_layout.add_widget(self.bg_image)
-
-        main_box = BoxLayout(orientation='vertical')
+    def _build_description_box(self):
+        description_box = BoxLayout(orientation='vertical')
 
         self.screen_title = Label(text=self.name, font_size=30, color=[0, 0, 0, 1])
-        self.screen_description = Label(text=description, font_size=30, color=[0, 0, 0, 1])
+        self.screen_description = Label(text=self.description, font_size=30, color=[0, 0, 0, 1])
 
-        main_box.add_widget(self.screen_title)
-        main_box.add_widget(self.screen_description)
+        description_box.add_widget(self.screen_title)
+        description_box.add_widget(self.screen_description)
 
+        return description_box
+
+    def _build_top_box(self):
+        top_box = GridLayout(cols=2)
+        self.char_image = Image(source='data/norowas.png')
+
+        top_box.add_widget(self.char_image)
+        top_box.add_widget(self._build_description_box())
+
+        return top_box
+
+    def _build_main_box(self):
+        main_box = BoxLayout(orientation='vertical')
+
+        main_box.add_widget(self._build_top_box())
         options_box = BoxLayout()
         for opt in self.options:
             img_file_name = 'data/%s_sm.png' % opt.replace(' ', '_')
-            # opt_button = IconButton(source=img_file_name, size=(296, 296), allow_stretch=True, keep_ratio=False)
             opt_button = IconButton(source=img_file_name, size=(296, 296))
 
             # each button will bind on release to self.handle_button(opt)
@@ -137,8 +144,14 @@ class DummyOptScreen(Screen):
             options_box.add_widget(opt_button)
 
         main_box.add_widget(options_box)
-        self.add_widget(main_layout)
         self.add_widget(main_box)
+
+    def __init__(self, **kwargs):
+        self.description = kwargs.pop('description')
+        self.options = kwargs.pop('options')
+
+        super(DummyOptScreen, self).__init__(**kwargs)
+        self._build_main_box()
 
     def handle_button(self, option, button):
         if option == 'draw':
@@ -156,17 +169,17 @@ class DummyOptScreen(Screen):
         if self.manager and self.manager.dummy:
             self.screen_title.text = self.manager.dummy.name
 
-    def update_bg_image(self):
+    def update_char_image(self):
         if self.manager and self.manager.dummy:
-            bg_image_file = 'data/%s.png' % self.manager.dummy.name
-            self.bg_image.source = bg_image_file
+            char_image_file = 'data/%s.png' % self.manager.dummy.name
+            self.char_image.source = char_image_file
 
     def update_description(self):
         if self.manager and self.manager.dummy:
             self.screen_description.text = self.manager.dummy.get_status()
 
     def on_pre_enter(self):
-        self.update_bg_image()
+        self.update_char_image()
         self.update_description()
         self.update_title()
 
