@@ -10,6 +10,9 @@ pip install -r requirements.txt
 ```
 
 ### Building app
+**OBS:** Might be necessary to start adb server as root before, ex:
+`sudo /home/myuser/.buildozer/android/platform/android-sdk-20/platform-tools/adb start-server`
+
 `buildozer android debug deploy`
 
 ## Publishing
